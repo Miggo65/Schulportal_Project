@@ -1,0 +1,58 @@
+======================================================================
+VERTRETUNGSPLAN - SCHULPORTAL HESSEN
+======================================================================
+Abgerufen: 2025-12-01T22:03:31.072655
+Anzahl Tage: 2
+======================================================================
+
+======================================================================
+DATUM: 01.12.2025heute49.
+Status: heute, 49. Woche
+Letzte Aktualisierung: Letzte Aktualisierung: 01.12.2025 um 14:50:52 Uhr
+======================================================================
+
+INFORMATIONEN
+----------------------------------------------------------------------
+Abwesende Lehrer:
+Hen (5-7), Wld (1-3), Spp (2-6), Fir (2-6), Alm (3-4), Ach (1-6), Nie (1-3), Urc (1-4, 6, 5), Köp (2), Shh (3), Kvh (3)
+
+Hinweis:
+Programmier-AG fällt am Montag aus.
+
+Entfall Klassen:
+08GA, 08RA, 09GC, E, Q1, Q3
+
+VERTRETUNGEN
+----------------------------------------------------------------------
+Stunde | Klasse | Vertreter | Lehrer | Art | Fach | Raum | Hinweis
+----------------------------------------------------------------------
+3 | E |  | Nie | Entfall | PH 2 |  | 
+9 - 10 | E | Ori | Ori | Raumvertretung | ET 2 | 027 | 
+9 - 10 | E | Vog | Vog | Raumvertretung | REV 2 | 028 | 
+
+Insgesamt 3 Vertretung(en)
+
+
+======================================================================
+DATUM: 02.12.2025morgen49.
+Status: morgen, 49. Woche
+Letzte Aktualisierung: Letzte Aktualisierung: 01.12.2025 um 14:50:52 Uhr
+======================================================================
+
+INFORMATIONEN
+----------------------------------------------------------------------
+Abwesende Lehrer:
+Smi (7), Nie (1-2, 5-7), Urc (5-7)
+
+Entfall Klassen:
+08GB, E, Q1
+
+VERTRETUNGEN
+----------------------------------------------------------------------
+Stunde | Klasse | Vertreter | Lehrer | Art | Fach | Raum | Hinweis
+----------------------------------------------------------------------
+7 | E |  | Smi | Entfall | US-M |  | 
+
+Insgesamt 1 Vertretung(en)
+
+
