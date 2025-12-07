@@ -80,10 +80,10 @@ def main():
         print("❌ Benutzername und Passwort können nicht leer sein!")
         return
     
-    # Ruft Browser start function aus library ab
+    # Ruft Browser start function aus library ab.
     with sync_playwright() as p:
+        # GEÄNDERT: chromium statt chrome
         browser = p.chromium.launch(
-            channel="chrome", 
             headless=True      
         )
         page = browser.new_page()
