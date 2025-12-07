@@ -1,0 +1,55 @@
+Montag
+Stunde 1 = Shm
+Stunde 2 = None
+Stunde 3 = Fsc
+Stunde 4 = None
+Stunde 5 = Fis
+Stunde 6 = Fis
+Stunde 7 = Pz
+Stunde 8 = Pz
+Stunde 9 = Svs
+Stunde 10 = Svs
+
+Dienstag
+Stunde 1 = Gbg
+Stunde 2 = Gbg
+Stunde 3 = Shm
+Stunde 4 = Shm
+Stunde 5 = Svs
+Stunde 6 = Svs
+Stunde 7 = None
+Stunde 8 = None
+Stunde 9 = None
+Stunde 10 = None
+
+Mittwoch
+Stunde 1 = Urc
+Stunde 2 = Urc
+Stunde 3 = Pz
+Stunde 4 = Pz
+Stunde 5 = Fsc
+Stunde 6 = Fsc
+Stunde 7 = None
+Stunde 8 = Has
+Stunde 9 = Has
+Stunde 10 = None
+
+Donnerstag
+Stunde 1 = Fis
+Stunde 2 = Fis
+Stunde 3 = None
+Stunde 4 = None
+Stunde 5 = Dts
+Stunde 6 = Dts
+Stunde 7 = Dts
+Stunde 8 = Svs
+Stunde 9 = None
+Stunde 10 = None
+
+Freitag
+Stunde 1 = Has
+Stunde 2 = Has
+Stunde 3 = Urc
+Stunde 4 = Urc
+Stunde 5 = Urc
+Stunde 6 = Urc
