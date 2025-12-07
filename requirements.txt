@@ -1,0 +1,13 @@
+# Schulportal Vertretungsplan Checker - Dependencies
+
+# Web Scraping
+playwright==1.48.0
+beautifulsoup4==4.12.3
+
+# HTML Parser für BeautifulSoup
+lxml==5.3.0
+
+# Utilities (bereits in Python Standard Library, aber hier zur Dokumentation)
+# datetime - Standard Library
+# json - Standard Library
+# os - Standard Library
