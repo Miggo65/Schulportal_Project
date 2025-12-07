@@ -30,14 +30,28 @@ Schulportal_Project/
 ### Voraussetzungen
 
 - Python 3.8+
-- Chrome/Chromium Browser
+- pip (Python Package Manager)
 
-### Dependencies installieren
+### Schritt 1: Repository klonen
 
 ```bash
-pip install playwright beautifulsoup4
-playwright install chrome
+git clone https://github.com/Miggo65/Schulportal_Project.git
+cd Schulportal_Project
 ```
+
+### Schritt 2: Dependencies installieren
+
+```bash
+pip install -r requirements.txt
+```
+
+### Schritt 3: Playwright Browser installieren
+
+```bash
+playwright install chromium
+```
+
+**Wichtig**: Wir verwenden Chromium (nicht Chrome), da es universeller funktioniert!
 
 ## Konfiguration ⚙️
 
@@ -74,6 +88,14 @@ Das Programm fragt nach:
 - Benutzername (Schulportal)
 - Passwort
 - Institutions-ID (Standard: 6081)
+
+### Test ohne echten Login
+
+```bash
+python test_checker.py
+```
+
+Testet die Abgleich-Logik mit Beispiel-Daten.
 
 ### Ausgabe-Beispiel
 
@@ -113,16 +135,52 @@ ZUSAMMENFASSUNG
    - Beim nächsten Durchlauf werden bereits bekannte Ausfälle als [DEBUG] markiert
 6. **Benachrichtigung**: Klare Meldung neuer Ausfälle in der Konsole
 
+## Troubleshooting 🔍
+
+### "playwright install chrome" funktioniert nicht
+
+**Lösung**: Verwende Chromium statt Chrome (bereits im Code geändert):
+```bash
+playwright install chromium
+```
+
+### Browser startet nicht
+
+```bash
+# Neu installieren
+playwright install chromium
+
+# System-Dependencies installieren (Linux)
+playwright install-deps chromium
+```
+
+### Encoding-Fehler
+
+Stelle sicher, dass alle Dateien in UTF-8 kodiert sind.
+
+### Login schlägt fehl
+
+- Überprüfe Benutzername und Passwort
+- Prüfe die Institutions-ID (meist 4-stellig)
+- Teste Login manuell im Browser
+
+### Import-Fehler
+
+```bash
+# Alle Dependencies neu installieren
+pip install -r requirements.txt --upgrade
+```
+
 ## Roadmap 🗺️
 
-### Phase 1: Basis-Funktionalität ✅ (AKTUELL)
+### Phase 1: Basis-Funktionalität ✅ (ABGESCHLOSSEN)
 - [x] Login und Vertretungsplan-Abruf
 - [x] Stundenplan-Parser
 - [x] Abgleich-Logik
 - [x] Tracking bereits gemeldeter Ausfälle
 - [x] Konsolen-Output
 
-### Phase 2: Automatisierung 🔜 (NEXT)
+### Phase 2: Automatisierung 🔜 (IN PLANUNG)
 - [ ] Automatische Ausführung alle 5 Minuten
 - [ ] Discord Webhook Integration
 - [ ] Benachrichtigung nur bei neuen Ausfällen
@@ -134,20 +192,6 @@ ZUSAMMENFASSUNG
 - [ ] Email-Benachrichtigungen
 - [ ] Telegram Bot Integration
 - [ ] Mobile App
-
-## Troubleshooting 🔍
-
-### Browser startet nicht
-```bash
-playwright install chrome
-```
-
-### Encoding-Fehler
-Stelle sicher, dass alle Dateien in UTF-8 kodiert sind.
-
-### Login schlägt fehl
-- Überprüfe Benutzername und Passwort
-- Prüfe die Institutions-ID (meist 4-stellig)
 
 ## Sicherheitshinweise 🔒
 
