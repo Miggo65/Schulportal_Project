@@ -30,12 +30,14 @@ wheels/
 *.swo
 *~
 
-# Environment
+# Environment - WICHTIG!
 .env
 .env.local
 
 # Tracking-Daten
 known_ausfaelle.json
+bot_stats.json
 
 # Logs
 *.log
+bot.log
