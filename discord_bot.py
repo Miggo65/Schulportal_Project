@@ -32,9 +32,9 @@ logger = logging.getLogger('VertretungsplanBot')
 # Lade .env Datei
 load_dotenv()
 
-# Bot Setup
+# Bot Setup - FIX: Nur default intents
 intents = discord.Intents.default()
-intents.message_content = True
+intents.message_content = True  # Für Commands
 bot = commands.Bot(command_prefix='/', intents=intents)
 
 # Globale Variablen
