@@ -35,10 +35,10 @@ sudo apt upgrade -y
 
 ## Teil 2: Python und Git installieren
 
-### Schritt 4: Python 3 installieren
+### Schritt 4: Python 3, venv und Git installieren
 
 ```bash
-sudo apt install python3 python3-pip python3-venv -y
+sudo apt install python3 python3-pip python3-venv git -y
 ```
 
 **Prüfe Installation:**
@@ -47,39 +47,43 @@ python3 --version
 # Sollte: Python 3.x.x anzeigen
 ```
 
-### Schritt 5: Git installieren
-
-```bash
-sudo apt install git -y
-```
-
-**Prüfe Installation:**
-```bash
-git --version
-# Sollte: git version x.x.x anzeigen
-```
-
 ---
 
-## Teil 3: Repository klonen und einrichten
+## Teil 3: Repository klonen und Virtual Environment
 
-### Schritt 6: Ins Home-Verzeichnis wechseln
+### Schritt 5: Ins Home-Verzeichnis wechseln
 
 ```bash
 cd ~
 ```
 
-### Schritt 7: Repository klonen
+### Schritt 6: Repository klonen
 
 ```bash
 git clone https://github.com/Miggo65/Schulportal_Project.git
 ```
 
-### Schritt 8: Ins Projektverzeichnis wechseln
+### Schritt 7: Ins Projektverzeichnis wechseln
 
 ```bash
 cd Schulportal_Project
 ```
+
+### Schritt 8: Virtual Environment erstellen und aktivieren
+
+```bash
+# venv erstellen
+python3 -m venv venv
+
+# venv aktivieren
+source venv/bin/activate
+```
+
+**Du siehst jetzt `(venv)` vor deinem Prompt!**
+
+---
+
+## Teil 4: Setup ausführen
 
 ### Schritt 9: Setup-Skript ausführbar machen
 
@@ -87,46 +91,40 @@ cd Schulportal_Project
 chmod +x setup.sh
 ```
 
----
-
-## Teil 4: Automatisches Setup ausführen
-
 ### Schritt 10: Setup starten
 
 ```bash
 ./setup.sh
 ```
 
-**Das Skript fragt dich interaktiv nach:**
+**Das Skript macht automatisch:**
+1. ✅ Installiert Python Dependencies
+2. ✅ Installiert System-Dependencies (libnss3, libnspr4, libasound2t64)
+3. ✅ Installiert Playwright Dependencies mit `python3 -m playwright install-deps`
+4. ✅ Installiert Chromium mit `python3 -m playwright install chromium`
 
+**Und fragt dich nach:**
 1. **Discord Bot Token**
    - Gehe zu: https://discord.com/developers/applications
-   - Wähle deine App → Bot → Reset Token (falls noch nicht geschehen)
-   - Kopiere das Token
-   - Füge es ein (wird nicht angezeigt beim Tippen!)
+   - Wähle deine App → Bot → Copy Token
+   - Füge es ein
 
 2. **Discord User ID**
    - Discord öffnen
    - Einstellungen → Erweitert → Entwicklermodus aktivieren
    - Rechtsklick auf dich selbst → ID kopieren
-   - Füge die ID ein
 
-3. **Institutions-ID** (Optional)
+3. **Optional: Schulportal Credentials**
+   - Du kannst sie jetzt speichern (j) oder später beim `/start` eingeben (n)
+   - Falls ja: Benutzername und Passwort
+
+4. **Institutions-ID** (Optional)
    - Standard: 6081
-   - Einfach Enter drücken für Standard
+   - Enter für Standard
 
-4. **Check-Intervall** (Optional)
+5. **Check-Intervall** (Optional)
    - Standard: 300 (5 Minuten)
-   - Einfach Enter drücken für Standard
-
-5. **Statistik-Intervall** (Optional)
-   - Standard: 3600 (1 Stunde)
-   - Einfach Enter drücken für Standard
-
-**Das Skript installiert automatisch:**
-- ✅ Python Dependencies
-- ✅ Chromium Browser
-- ✅ Erstellt .env Datei mit deinen Eingaben
+   - Enter für Standard
 
 ---
 
@@ -144,9 +142,9 @@ python3 discord_bot.py
 2. Du bekommst eine DM: **"✅ Vertretungsplan Bot ist bereit!"**
 3. Schreibe in die DM: `/start`
 4. Bot fragt nach:
-   - Schulportal Benutzername
-   - Schulportal Passwort (wird nach Eingabe gelöscht)
-   - Institutions-ID (Optional, Enter für Standard)
+   - Schulportal Benutzername (oder `.` für .env)
+   - Schulportal Passwort: **`||deinPasswort||`** (mit Spoiler-Tags!) oder `.` für .env
+   - Institutions-ID (`.` für Standard)
 5. Bot beginnt mit dem Monitoring!
 
 ---
@@ -160,7 +158,7 @@ wsl
 # 2. System aktualisieren
 sudo apt update && sudo apt upgrade -y
 
-# 3. Python und Git installieren
+# 3. Python, venv und Git installieren
 sudo apt install python3 python3-pip python3-venv git -y
 
 # 4. Repository klonen
@@ -170,15 +168,35 @@ git clone https://github.com/Miggo65/Schulportal_Project.git
 # 5. Ins Projektverzeichnis
 cd Schulportal_Project
 
-# 6. Setup ausführbar machen
+# 6. Virtual Environment erstellen und aktivieren
+python3 -m venv venv
+source venv/bin/activate
+
+# 7. Setup ausführbar machen
 chmod +x setup.sh
 
-# 7. Setup starten (fragt nach Token, User ID, etc.)
+# 8. Setup starten (fragt nach Token, User ID, etc.)
 ./setup.sh
 
-# 8. Bot starten
+# 9. Bot starten
 python3 discord_bot.py
 ```
+
+---
+
+## Discord Commands
+
+### `/start`
+Startet Monitoring. Du musst eingeben:
+- Benutzername (oder `.` für .env)
+- Passwort als Spoiler: `||passwort||` (oder `.` für .env)
+- Institution (`.` für Standard)
+
+### `/stop`
+Stoppt Monitoring
+
+### `/scanstatus`
+Zeigt Status und Statistiken
 
 ---
 
@@ -191,6 +209,16 @@ python3 discord_bot.py
 Ctrl + C
 ```
 
+### Virtual Environment
+
+```bash
+# venv aktivieren (falls nicht aktiv)
+source venv/bin/activate
+
+# venv deaktivieren
+deactivate
+```
+
 ### Bot im Hintergrund laufen lassen (Screen)
 
 ```bash
@@ -199,6 +227,9 @@ sudo apt install screen -y
 
 # Screen-Session starten
 screen -S schulportal-bot
+
+# venv aktivieren
+source venv/bin/activate
 
 # Bot starten
 python3 discord_bot.py
@@ -218,7 +249,7 @@ exit
 ```bash
 cd ~/Schulportal_Project
 git pull
-./setup.sh  # Falls nötig
+source venv/bin/activate  # Falls nicht schon aktiv
 python3 discord_bot.py
 ```
 
@@ -257,28 +288,27 @@ sudo apt update
 sudo apt install python3.11 python3.11-venv python3-pip -y
 ```
 
+### playwright: command not found
+
+```bash
+# WICHTIG: Nutze python3 -m prefix!
+python3 -m playwright install chromium
+python3 -m playwright install-deps
+```
+
 ### Chromium Installation schlägt fehl
 
 ```bash
-# System-Dependencies installieren
-sudo apt install -y \
-    libnss3 \
-    libnspr4 \
-    libatk1.0-0 \
-    libatk-bridge2.0-0 \
-    libcups2 \
-    libdrm2 \
-    libxkbcommon0 \
-    libxcomposite1 \
-    libxdamage1 \
-    libxfixes3 \
-    libxrandr2 \
-    libgbm1 \
-    libasound2
+# System-Dependencies manuell installieren
+sudo apt update
+sudo apt install -y libnss3 libnspr4 libasound2t64
+
+# Für ältere Ubuntu-Versionen
+sudo apt install -y libasound2
 
 # Playwright neu installieren
-playwright install chromium
-playwright install-deps chromium
+python3 -m playwright install-deps
+python3 -m playwright install chromium
 ```
 
 ### Permission Denied bei setup.sh
@@ -296,7 +326,7 @@ bash setup.sh
 **Prüfe .env:**
 ```bash
 cat .env
-# Token muss mit MTQ... beginnen
+# Token muss mit MTQ... oder ähnlich beginnen
 # Keine Leerzeichen vor/nach Token
 ```
 
@@ -306,6 +336,12 @@ nano .env
 # Bearbeite DISCORD_BOT_TOKEN=...
 # Speichern: Ctrl+O, Enter, Ctrl+X
 ```
+
+### "Cannot send empty message" in Discord
+
+Discord erlaubt keine leeren Nachrichten. Deshalb:
+- Statt Enter für Standard → sende `.` (Punkt)
+- Passwort mit Spoiler-Tags: `||deinPasswort||`
 
 ---
 
@@ -343,7 +379,8 @@ After=network.target
 Type=simple
 User=DEIN_USERNAME
 WorkingDirectory=/home/DEIN_USERNAME/Schulportal_Project
-ExecStart=/usr/bin/python3 /home/DEIN_USERNAME/Schulportal_Project/discord_bot.py
+Environment="PATH=/home/DEIN_USERNAME/Schulportal_Project/venv/bin:/usr/bin"
+ExecStart=/home/DEIN_USERNAME/Schulportal_Project/venv/bin/python3 /home/DEIN_USERNAME/Schulportal_Project/discord_bot.py
 Restart=always
 RestartSec=10
 
@@ -376,6 +413,35 @@ ps aux | grep discord_bot.py
 # Prozess killen (falls nötig)
 pkill -f discord_bot.py
 ```
+
+---
+
+## 💡 Wichtige Tipps
+
+### Virtual Environment immer aktivieren!
+```bash
+cd ~/Schulportal_Project
+source venv/bin/activate
+# Jetzt siehst du (venv) vor dem Prompt
+```
+
+### Playwright nur mit python3 -m
+```bash
+# RICHTIG:
+python3 -m playwright install chromium
+
+# FALSCH:
+playwright install chromium  # Funktioniert nicht in venv!
+```
+
+### Passwort sicher in Discord
+Immer mit Spoiler-Tags schreiben:
+```
+||meinPasswort123||
+```
+
+### Standard-Werte nutzen
+Beim `/start` Command `.` eingeben um Werte aus .env zu nutzen.
 
 ---
 
