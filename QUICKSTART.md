@@ -21,7 +21,7 @@ sudo apt update && sudo apt upgrade -y
 
 ---
 
-## ✅ Schritt 3: Python & Git installieren
+## ✅ Schritt 3: Python, Git & Dependencies installieren
 
 ```bash
 sudo apt install python3 python3-pip python3-venv git -y
@@ -39,7 +39,18 @@ cd Schulportal_Project
 
 ---
 
-## ✅ Schritt 5: Setup ausführbar machen
+## ✅ Schritt 5: Virtual Environment erstellen
+
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+**Wichtig:** Ab jetzt alle Commands im venv ausführen!
+
+---
+
+## ✅ Schritt 6: Setup ausführbar machen
 
 ```bash
 chmod +x setup.sh
@@ -47,7 +58,7 @@ chmod +x setup.sh
 
 ---
 
-## ✅ Schritt 6: Setup starten
+## ✅ Schritt 7: Setup starten
 
 ```bash
 ./setup.sh
@@ -56,13 +67,13 @@ chmod +x setup.sh
 **Jetzt wirst du gefragt nach:**
 1. Discord Bot Token
 2. Discord User ID
-3. Institution (Enter für 6081)
-4. Check-Intervall (Enter für 5 Min)
-5. Stats-Intervall (Enter für 1 Std)
+3. Optional: Schulportal Credentials (oder später beim /start)
+4. Institution (Enter für 6081)
+5. Check-Intervall (Enter für 5 Min)
 
 ---
 
-## ✅ Schritt 7: Bot starten
+## ✅ Schritt 8: Bot starten
 
 ```bash
 python3 discord_bot.py
@@ -74,15 +85,15 @@ python3 discord_bot.py
 
 ---
 
-## ✅ Schritt 8: In Discord
+## ✅ Schritt 9: In Discord
 
 1. Öffne Discord
 2. Gehe zu DMs mit dem Bot
 3. Schreibe: `/start`
 4. Gib ein:
-   - Schulportal Benutzername
-   - Schulportal Passwort
-   - Institution (Enter für 6081)
+   - Schulportal Benutzername (oder `.` für Standard aus .env)
+   - Schulportal Passwort als Spoiler: `||deinPasswort||` (oder `.` für Standard)
+   - Institution (`.` für Standard)
 
 **Fertig!** Bot läuft jetzt! 🎉
 
@@ -100,6 +111,10 @@ cd ~
 git clone https://github.com/Miggo65/Schulportal_Project.git
 cd Schulportal_Project
 
+# === Virtual Environment ===
+python3 -m venv venv
+source venv/bin/activate
+
 # === Setup ===
 chmod +x setup.sh
 ./setup.sh
@@ -110,11 +125,43 @@ python3 discord_bot.py
 
 ---
 
+## 🎮 Discord Commands
+
+### `/start`
+Startet das Monitoring.
+
+**Eingaben:**
+- Benutzername: Dein Schulportal-Username (oder `.` für .env)
+- Passwort: `||deinPasswort||` mit Spoiler-Tags! (oder `.` für .env)
+- Institution: `.` für Standard (6081)
+
+### `/stop`
+Stoppt das Monitoring.
+
+### `/scanstatus`
+Zeigt Status und Statistiken:
+- Anzahl erfolgreicher/fehlgeschlagener Scans
+- Gefundene Ausfälle
+- Letzter Scan-Zeitpunkt
+
+---
+
 ## 🔄 Zusätzliche Commands
 
 ### Bot stoppen
 ```bash
 Ctrl + C
+```
+
+### Aus venv ausloggen
+```bash
+deactivate
+```
+
+### Wieder in venv einloggen
+```bash
+cd ~/Schulportal_Project
+source venv/bin/activate
 ```
 
 ### Bot im Hintergrund (Screen)
@@ -124,6 +171,9 @@ sudo apt install screen -y
 
 # Screen starten
 screen -S bot
+
+# venv aktivieren
+source venv/bin/activate
 
 # Bot starten
 python3 discord_bot.py
@@ -139,6 +189,7 @@ screen -r bot
 ```bash
 cd ~/Schulportal_Project
 git pull
+source venv/bin/activate  # Falls nicht schon aktiv
 python3 discord_bot.py
 ```
 
@@ -147,10 +198,11 @@ python3 discord_bot.py
 tail -f bot.log
 ```
 
-### Projekt löschen (falls nötig)
+### Chromium neu installieren (bei Problemen)
 ```bash
-cd ~
-rm -rf Schulportal_Project
+source venv/bin/activate
+python3 -m playwright install-deps
+python3 -m playwright install chromium
 ```
 
 ---
@@ -185,24 +237,61 @@ wsl --install
 ```bash
 # Python Version prüfen
 python3 --version
-
 # Sollte 3.8+ sein
 ```
 
-### Chromium-Fehler
+### playwright: command not found
 ```bash
-playwright install chromium
-playwright install-deps chromium
+# WICHTIG: Nutze python3 -m prefix
+python3 -m playwright install chromium
+python3 -m playwright install-deps
 ```
 
 ### Bot verbindet nicht
 ```bash
 # .env prüfen
 cat .env
+# Token muss mit MTQ... oder ähnlich beginnen
+```
 
-# Token muss mit MTQ... beginnen
-# Neu bearbeiten:
-nano .env
+### "libasound2t64 not found"
+```bash
+# Für ältere Ubuntu-Versionen
+sudo apt install libasound2 -y
+```
+
+### Chromium startet nicht
+```bash
+# System-Dependencies neu installieren
+sudo apt update
+sudo apt install -y libnss3 libnspr4 libasound2t64
+python3 -m playwright install-deps
+python3 -m playwright install chromium
+```
+
+---
+
+## 💡 Tipps
+
+### Passwort sicher eingeben in Discord
+Schreibe es immer mit Spoiler-Tags:
+```
+||deinPasswort||
+```
+Das wird dann als Spoiler angezeigt und nur sichtbar wenn man draufklickt.
+
+### Standard-Werte nutzen
+Wenn du beim Setup Schulportal-Credentials in .env gespeichert hast:
+- Beim `/start` Command einfach `.` eingeben
+- Bot nutzt dann die Werte aus .env
+
+### Screen für 24/7 Betrieb
+Screen ist perfekt für WSL/Ubuntu:
+```bash
+screen -S bot
+source venv/bin/activate
+python3 discord_bot.py
+# Ctrl+A, D zum Verlassen
 ```
 
 ---
