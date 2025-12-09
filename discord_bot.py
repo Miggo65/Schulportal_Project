@@ -32,7 +32,7 @@ logger = logging.getLogger('VertretungsplanBot')
 # Lade .env Datei
 load_dotenv()
 
-# Bot Setup - FIX: Nur default intents
+# Bot Setup - Nur default intents
 intents = discord.Intents.default()
 intents.message_content = True  # Für Commands
 bot = commands.Bot(command_prefix='/', intents=intents)
@@ -90,7 +90,6 @@ async def check_vertretungsplan():
             
             try:
                 # Login (wir müssen die synchronen Funktionen anpassen)
-                # Für jetzt verwenden wir die synchrone Version in einem Thread
                 from concurrent.futures import ThreadPoolExecutor
                 
                 def sync_check():
@@ -179,37 +178,6 @@ async def monitoring_loop():
         await check_vertretungsplan()
 
 
-@tasks.loop(seconds=3600)  # 1 Stunde
-async def stats_loop():
-    """Stündliche Statistik-Nachricht"""
-    if is_monitoring and scan_stats['total_scans'] > 0:
-        user = await bot.fetch_user(target_user_id)
-        if user:
-            embed = discord.Embed(
-                title="📊 Stündliche Statistik",
-                color=discord.Color.blue(),
-                timestamp=datetime.now()
-            )
-            embed.add_field(name="Erfolgreiche Scans", 
-                          value=str(scan_stats['successful_scans']), 
-                          inline=True)
-            embed.add_field(name="Fehlgeschlagene Scans", 
-                          value=str(scan_stats['failed_scans']), 
-                          inline=True)
-            embed.add_field(name="Neue Ausfälle gefunden", 
-                          value=str(scan_stats['new_ausfaelle_found']), 
-                          inline=True)
-            
-            if scan_stats['last_scan']:
-                last_scan = datetime.fromisoformat(scan_stats['last_scan'])
-                embed.add_field(name="Letzter Scan", 
-                              value=last_scan.strftime('%H:%M:%S'), 
-                              inline=False)
-            
-            await user.send(embed=embed)
-            logger.info("📊 Stündliche Statistik gesendet")
-
-
 @bot.event
 async def on_ready():
     """Bot ist bereit"""
@@ -226,7 +194,7 @@ async def on_ready():
             timestamp=datetime.now()
         )
         embed.add_field(name="Commands", 
-                       value="`/start` - Monitoring starten\n`/stop` - Monitoring stoppen\n`/status` - Status anzeigen", 
+                       value="`/start` - Monitoring starten\n`/stop` - Monitoring stoppen\n`/scanstatus` - Status anzeigen", 
                        inline=False)
         await user.send(embed=embed)
         logger.info("✅ Bereit-Nachricht gesendet")
@@ -246,7 +214,7 @@ async def start_monitoring(ctx):
         return
     
     # Frage nach Credentials
-    await ctx.send("📝 Bitte gib deinen **Benutzernamen** für das Schulportal ein:")
+    await ctx.send("📝 Bitte gib deinen **Benutzernamen** für das Schulportal ein:\n(Sende `.` für Standard aus .env)")
     
     def check(m):
         return m.author == ctx.author and isinstance(m.channel, discord.DMChannel)
@@ -255,16 +223,43 @@ async def start_monitoring(ctx):
         # Username
         username_msg = await bot.wait_for('message', check=check, timeout=60.0)
         username = username_msg.content.strip()
+        if username == ".":
+            username = os.getenv('SCHULPORTAL_USERNAME', '')
+            if not username:
+                await ctx.send("❌ Kein Standard-Benutzername in .env gefunden!")
+                return
+            await ctx.send(f"✅ Verwende Standard-Benutzername aus .env")
         
-        # Password
-        await ctx.send("🔒 Bitte gib dein **Passwort** ein:")
+        # Password mit Spoiler-Tags
+        await ctx.send("🔒 Bitte gib dein **Passwort** ein:\n⚠️ **Wichtig:** Schreibe es so: `||deinPasswort||` (mit ||...||)\nDies markiert es als Spoiler und schützt es vor fremden Blicken.\n(Sende `.` für Standard aus .env)")
         password_msg = await bot.wait_for('message', check=check, timeout=60.0)
         password = password_msg.content.strip()
         
+        if password == ".":
+            password = os.getenv('SCHULPORTAL_PASSWORD', '')
+            if not password:
+                await ctx.send("❌ Kein Standard-Passwort in .env gefunden!")
+                return
+            await ctx.send(f"✅ Verwende Standard-Passwort aus .env")
+        else:
+            # Entferne Spoiler-Tags falls vorhanden
+            password = password.replace('||', '').strip()
+        
+        # Lösche Passwort-Nachricht
+        try:
+            await password_msg.delete()
+        except:
+            pass
+        
         # Optional: Institution
-        await ctx.send("🏫 Institutions-ID (Standard: 6081, Enter für Standard):")
+        await ctx.send("🏫 Institutions-ID (Standard: 6081, sende `.` für Standard):")
         institution_msg = await bot.wait_for('message', check=check, timeout=30.0)
-        institution = institution_msg.content.strip() or "6081"
+        institution_input = institution_msg.content.strip()
+        
+        if institution_input == "." or institution_input == "":
+            institution = os.getenv('SCHULPORTAL_INSTITUTION', '6081')
+        else:
+            institution = institution_input
         
         # Speichere Credentials
         user_credentials = {
@@ -273,20 +268,13 @@ async def start_monitoring(ctx):
             'institution': institution
         }
         
-        # Lösche sensible Nachrichten
-        try:
-            await password_msg.delete()
-        except:
-            pass
-        
         # Starte Monitoring
         is_monitoring = True
         monitoring_loop.start()
-        stats_loop.start()
         
         embed = discord.Embed(
             title="✅ Monitoring gestartet!",
-            description=f"Prüfe alle 5 Minuten auf neue Ausfälle.\nStündliche Statistik wird gesendet.",
+            description=f"Prüfe alle 5 Minuten auf neue Ausfälle.",
             color=discord.Color.green(),
             timestamp=datetime.now()
         )
@@ -321,15 +309,14 @@ async def stop_monitoring(ctx):
     
     is_monitoring = False
     monitoring_loop.cancel()
-    stats_loop.cancel()
     
     await ctx.send("⏹️ Monitoring gestoppt.")
     logger.info("⏹️ Monitoring gestoppt")
 
 
-@bot.command(name='status')
+@bot.command(name='scanstatus')
 async def show_status(ctx):
-    """Zeige Status"""
+    """Zeige Scan-Status und Statistiken"""
     if ctx.author.id != target_user_id:
         await ctx.send("❌ Du bist nicht autorisiert.")
         return
@@ -337,7 +324,7 @@ async def show_status(ctx):
     status = "🟢 Aktiv" if is_monitoring else "🔴 Inaktiv"
     
     embed = discord.Embed(
-        title="📊 Bot Status",
+        title="📊 Scan-Status",
         color=discord.Color.green() if is_monitoring else discord.Color.red(),
         timestamp=datetime.now()
     )
@@ -345,7 +332,7 @@ async def show_status(ctx):
     embed.add_field(name="Gesamt Scans", value=str(scan_stats['total_scans']), inline=True)
     embed.add_field(name="Erfolgreich", value=str(scan_stats['successful_scans']), inline=True)
     embed.add_field(name="Fehlgeschlagen", value=str(scan_stats['failed_scans']), inline=True)
-    embed.add_field(name="Neue Ausfälle", value=str(scan_stats['new_ausfaelle_found']), inline=True)
+    embed.add_field(name="Neue Ausfälle gefunden", value=str(scan_stats['new_ausfaelle_found']), inline=True)
     
     if scan_stats['last_scan']:
         last_scan = datetime.fromisoformat(scan_stats['last_scan'])
